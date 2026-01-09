@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Financiero</title>
+
+    <style>
+        :root {
+            --primary: #1e40af;
+            --dark: #0f172a;
+            --bg: #020617;
+            --card: #ffffff;
+            --success: #16a34a;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #020617, #1e3a8a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dashboard {
+            width: 850px;
+            background: var(--card);
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, .35);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        /* ====== TARJETAS ====== */
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 25px;
+        }
+
+        .card h2 {
+            margin: 0 0 15px;
+            font-size: 18px;
+            color: var(--dark);
+        }
+
+        /* ====== IVA ====== */
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-top: 6px;
+        }
+
+        .input-wrapper span {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            color: #475569;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 14px 14px 32px;
+            font-size: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            outline: none;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--primary);
+        }
+
+        .resultado {
+            margin-top: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .resultado small {
+            color: #64748b;
+        }
+
+        .resultado .valor {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--success);
+            margin-top: 8px;
+        }
+
+        .transfer-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ====== CALCULADORA ====== */
+        .calc-display {
+            width: 100%;
+            padding: 15px;
+            font-size: 22px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-bottom: 15px;
+            text-align: right;
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .calc-grid button {
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 10px;
+            border: none;
+            background: #e5e7eb;
+            cursor: pointer;
+        }
+
+        .calc-grid button.operator {
+            background: #2563eb;
+            color: white;
+        }
+
+        .calc-grid button.equal {
+            background: #16a34a;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .calc-grid button.clear {
+            background: #dc2626;
+            color: white;
+            grid-column: span 2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- IVA -->
+        <div class="card">
+            <h2>Valor sin IVA (19%)</h2>
+
+            <div class="input-group">
+                <label>Valor con IVA incluido</label>
+                <div class="input-wrapper">
+                    <span>$</span>
+                    <input type="number" id="valorConIva" placeholder="Ej: 119000">
+                </div>
+            </div>
+
+            <div class="resultado">
+                <small>Valor base (redondeado)</small>
+                <div class="valor" id="valorSinIva">$ 0</div>
+            </div>
+
+            <button class="transfer-btn" onclick="transferirValor()">
+                Usar este valor en la calculadora
+            </button>
+        </div>
+
+        <!-- CALCULADORA -->
+        <div class="card">
+            <h2>Calculadora</h2>
+
+            <input type="text" id="calcDisplay" class="calc-display" disabled>
+
+            <div class="calc-grid">
+                <button onclick="addCalc('7')">7</button>
+                <button onclick="addCalc('8')">8</button>
+                <button onclick="addCalc('9')">9</button>
+                <button class="operator" onclick="addCalc('/')">÷</button>
+
+                <button onclick="addCalc('4')">4</button>
+                <button onclick="addCalc('5')">5</button>
+                <button onclick="addCalc('6')">6</button>
+                <button class="operator" onclick="addCalc('*')">×</button>
+
+                <button onclick="addCalc('1')">1</button>
+                <button onclick="addCalc('2')">2</button>
+                <button onclick="addCalc('3')">3</button>
+                <button class="operator" onclick="addCalc('-')">−</button>
+
+                <button onclick="addCalc('0')">0</button>
+                <button onclick="addCalc('.')">.</button>
+                <button class="operator" onclick="addCalc('+')">+</button>
+                <button class="equal" onclick="calcularCalc()">=</button>
+
+                <button class="clear" onclick="clearCalc()">C</button>
+                <button class="operator" onclick="roundCalc()">≈</button>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const inputIva = document.getElementById("valorConIva");
+        const resultadoIva = document.getElementById("valorSinIva");
+        const calcDisplay = document.getElementById("calcDisplay");
+
+        let valorBase = 0;
+
+        /* === CÁLCULO AUTOMÁTICO IVA === */
+        inputIva.addEventListener("input", () => {
+            const valor = parseFloat(inputIva.value);
+
+            if (isNaN(valor) || valor <= 0) {
+                resultadoIva.textContent = "$ 0";
+                valorBase = 0;
+                return;
+            }
+
+            valorBase = Math.round(valor / 1.19);
+            resultadoIva.textContent = "$ " + valorBase.toLocaleString("es-CO");
+        });
+
+        /* === TRANSFERIR A CALCULADORA === */
+        function transferirValor() {
+            if (valorBase > 0) {
+                calcDisplay.value = valorBase;
+            }
+        }
+
+        /* === CALCULADORA === */
+        function addCalc(value) {
+            calcDisplay.value += value;
+        }
+
+        function calcularCalc() {
+            try {
+                calcDisplay.value = eval(calcDisplay.value);
+            } catch {
+                calcDisplay.value = "Error";
+            }
+        }
+
+        function clearCalc() {
+            calcDisplay.value = "";
+        }
+    </script>
+
+    <script>
+        // ====== CONTROL POR TECLADO ======
+        document.addEventListener("keydown", (e) => {
+
+            // Evitar interferir cuando se escribe el valor con IVA
+            if (document.activeElement.id === "valorConIva") return;
+
+            const tecla = e.key;
+
+            // Números
+            if (!isNaN(tecla)) {
+                addCalc(tecla);
+            }
+
+            // Operadores
+            if (["+", "-", "*", "/"].includes(tecla)) {
+                addCalc(tecla);
+            }
+
+            // Decimal
+            if (tecla === ".") {
+                addCalc(".");
+            }
+
+            // Enter = calcular
+            if (tecla === "Enter") {
+                e.preventDefault();
+                calcularCalc();
+            }
+
+            // Borrar último carácter
+            if (tecla === "Backspace") {
+                calcDisplay.value = calcDisplay.value.slice(0, -1);
+            }
+
+            // Limpiar todo
+            if (tecla === "Escape") {
+                clearCalc();
+            }
+
+
+            // Redondear con tecla R
+            if (tecla.toLowerCase() === "r") {
+                roundCalc();
+            }
+        });
+
+
+
+
+        function roundCalc() {
+            if (calcDisplay.value === "") return;
+
+            const valor = parseFloat(calcDisplay.value);
+
+            if (isNaN(valor)) {
+                calcDisplay.value = "Error";
+                return;
+            }
+
+            calcDisplay.value = Math.round(valor);
+        }
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
