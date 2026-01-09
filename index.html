@@ -1,344 +1,179 @@
-<!DOCTYPE html>
-<html lang="es">
-
+<!doctype html>
+<html lang="es-CO">
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard Financiero</title>
-
-    <style>
-        :root {
-            --primary: #1e40af;
-            --dark: #0f172a;
-            --bg: #020617;
-            --card: #ffffff;
-            --success: #16a34a;
-            --border: #e2e8f0;
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #020617, #1e3a8a);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .dashboard {
-            width: 850px;
-            background: var(--card);
-            border-radius: 18px;
-            padding: 30px;
-            box-shadow: 0 30px 70px rgba(0, 0, 0, .35);
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        /* ====== TARJETAS ====== */
-        .card {
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 25px;
-        }
-
-        .card h2 {
-            margin: 0 0 15px;
-            font-size: 18px;
-            color: var(--dark);
-        }
-
-        /* ====== IVA ====== */
-        .input-group label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #334155;
-        }
-
-        .input-wrapper {
-            position: relative;
-            margin-top: 6px;
-        }
-
-        .input-wrapper span {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: bold;
-            color: #475569;
-        }
-
-        .input-wrapper input {
-            width: 100%;
-            padding: 14px 14px 14px 32px;
-            font-size: 20px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            outline: none;
-        }
-
-        .input-wrapper input:focus {
-            border-color: var(--primary);
-        }
-
-        .resultado {
-            margin-top: 20px;
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .resultado small {
-            color: #64748b;
-        }
-
-        .resultado .valor {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--success);
-            margin-top: 8px;
-        }
-
-        .transfer-btn {
-            margin-top: 15px;
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #2563eb, #1e40af);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* ====== CALCULADORA ====== */
-        .calc-display {
-            width: 100%;
-            padding: 15px;
-            font-size: 22px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            margin-bottom: 15px;
-            text-align: right;
-        }
-
-        .calc-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .calc-grid button {
-            padding: 15px;
-            font-size: 18px;
-            border-radius: 10px;
-            border: none;
-            background: #e5e7eb;
-            cursor: pointer;
-        }
-
-        .calc-grid button.operator {
-            background: #2563eb;
-            color: white;
-        }
-
-        .calc-grid button.equal {
-            background: #16a34a;
-            color: white;
-            grid-column: span 2;
-        }
-
-        .calc-grid button.clear {
-            background: #dc2626;
-            color: white;
-            grid-column: span 2;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OPERADOR MULTISERVICIOS</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-
-    <div class="dashboard">
-
-        <!-- IVA -->
-        <div class="card">
-            <h2>Valor sin IVA (19%)</h2>
-
-            <div class="input-group">
-                <label>Valor con IVA incluido</label>
-                <div class="input-wrapper">
-                    <span>$</span>
-                    <input type="number" id="valorConIva" placeholder="Ej: 119000">
-                </div>
-            </div>
-
-            <div class="resultado">
-                <small>Valor base (redondeado)</small>
-                <div class="valor" id="valorSinIva">$ 0</div>
-            </div>
-
-            <button class="transfer-btn" onclick="transferirValor()">
-                Usar este valor en la calculadora
-            </button>
-        </div>
-
-        <!-- CALCULADORA -->
-        <div class="card">
-            <h2>Calculadora</h2>
-
-            <input type="text" id="calcDisplay" class="calc-display" disabled>
-
-            <div class="calc-grid">
-                <button onclick="addCalc('7')">7</button>
-                <button onclick="addCalc('8')">8</button>
-                <button onclick="addCalc('9')">9</button>
-                <button class="operator" onclick="addCalc('/')">÷</button>
-
-                <button onclick="addCalc('4')">4</button>
-                <button onclick="addCalc('5')">5</button>
-                <button onclick="addCalc('6')">6</button>
-                <button class="operator" onclick="addCalc('*')">×</button>
-
-                <button onclick="addCalc('1')">1</button>
-                <button onclick="addCalc('2')">2</button>
-                <button onclick="addCalc('3')">3</button>
-                <button class="operator" onclick="addCalc('-')">−</button>
-
-                <button onclick="addCalc('0')">0</button>
-                <button onclick="addCalc('.')">.</button>
-                <button class="operator" onclick="addCalc('+')">+</button>
-                <button class="equal" onclick="calcularCalc()">=</button>
-
-                <button class="clear" onclick="clearCalc()">C</button>
-                <button class="operator" onclick="roundCalc()">≈</button>
-
-            </div>
-        </div>
-
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">OM</div>
+      <div>
+        <h1>OPERADOR MULTISERVICIOS</h1>
+        <p class="subtitle">Herramientas rápidas para procesos de venta</p>
+      </div>
     </div>
 
-    <script>
-        const inputIva = document.getElementById("valorConIva");
-        const resultadoIva = document.getElementById("valorSinIva");
-        const calcDisplay = document.getElementById("calcDisplay");
+    <div class="header-actions">
+      <button class="btn btn-ghost" id="btnResetAll" title="Limpiar todo (Ctrl+L)">
+        Limpiar todo
+      </button>
+      <div class="hint">Atajos: <kbd>Ctrl</kbd>+<kbd>L</kbd> limpiar • <kbd>Enter</kbd> eval calculadora</div>
+    </div>
+  </header>
 
-        let valorBase = 0;
+  <main class="grid">
+    <!-- IVA -->
+    <section class="card" aria-labelledby="ivaTitle">
+      <div class="card-header">
+        <h2 id="ivaTitle">Cálculo de IVA (19%)</h2>
+        <span class="badge">IVA 19%</span>
+      </div>
 
-        /* === CÁLCULO AUTOMÁTICO IVA === */
-        inputIva.addEventListener("input", () => {
-            const valor = parseFloat(inputIva.value);
+      <div class="field">
+        <label for="ivaInput">Valor (ingresado por el operador)</label>
+        <div class="input-row">
+          <input id="ivaInput" inputmode="decimal" autocomplete="off" placeholder="Ej: 119000" />
+          <button class="btn btn-ghost" id="btnIvaPaste" title="Pegar desde portapapeles">Pegar</button>
+        </div>
+        <small class="help">Puedes escribir con puntos o comas. Se normaliza automáticamente.</small>
+      </div>
 
-            if (isNaN(valor) || valor <= 0) {
-                resultadoIva.textContent = "$ 0";
-                valorBase = 0;
-                return;
-            }
+      <div class="toggle">
+        <label class="radio">
+          <input type="radio" name="ivaMode" value="SIN" checked />
+          <span>Calcular <strong>valor SIN IVA</strong> (dividir por 1.19)</span>
+        </label>
+        <label class="radio">
+          <input type="radio" name="ivaMode" value="CON" />
+          <span>Calcular <strong>valor CON IVA</strong> (multiplicar por 1.19)</span>
+        </label>
+      </div>
 
-            valorBase = Math.round(valor / 1.19);
-            resultadoIva.textContent = "$ " + valorBase.toLocaleString("es-CO");
-        });
+      <div class="results">
+        <div class="result">
+          <div class="result-label" id="ivaResultLabel">Resultado</div>
+          <div class="result-value" id="ivaResult">$0</div>
+          <div class="result-sub" id="ivaResultRaw">0</div>
+        </div>
 
-        /* === TRANSFERIR A CALCULADORA === */
-        function transferirValor() {
-            if (valorBase > 0) {
-                calcDisplay.value = valorBase;
-            }
-        }
+        <div class="result subtle">
+          <div class="result-label">IVA (diferencia)</div>
+          <div class="result-value" id="ivaDiff">$0</div>
+          <div class="result-sub" id="ivaDiffRaw">0</div>
+        </div>
+      </div>
 
-        /* === CALCULADORA === */
-        function addCalc(value) {
-            calcDisplay.value += value;
-        }
+      <div class="actions">
+        <button class="btn" id="btnIvaToCalc">Traer resultado a Calculadora</button>
+        <button class="btn btn-ghost" id="btnIvaCopy">Copiar resultado</button>
+      </div>
+    </section>
 
-        function calcularCalc() {
-            try {
-                calcDisplay.value = eval(calcDisplay.value);
-            } catch {
-                calcDisplay.value = "Error";
-            }
-        }
+    <!-- CALCULADORA -->
+    <section class="card" aria-labelledby="calcTitle">
+      <div class="card-header">
+        <h2 id="calcTitle">Calculadora</h2>
+        <span class="badge badge-soft">Teclado habilitado</span>
+      </div>
 
-        function clearCalc() {
-            calcDisplay.value = "";
-        }
-    </script>
+      <div class="calc">
+        <div class="calc-display">
+          <div class="calc-mini" id="calcMini">Listo</div>
+          <input id="calcDisplay" autocomplete="off" inputmode="decimal" spellcheck="false" placeholder="0" />
+        </div>
 
-    <script>
-        // ====== CONTROL POR TECLADO ======
-        document.addEventListener("keydown", (e) => {
+        <div class="calc-actions">
+          <button class="btn btn-ghost" id="btnCalcUseIva">Usar valor del IVA</button>
+          <button class="btn btn-ghost" id="btnCalcCopy">Copiar</button>
+          <button class="btn btn-ghost" id="btnCalcClear">C</button>
+        </div>
 
-            // Evitar interferir cuando se escribe el valor con IVA
-            if (document.activeElement.id === "valorConIva") return;
+        <div class="calc-grid" aria-label="Botones de calculadora">
+          <button class="key" data-k="7">7</button>
+          <button class="key" data-k="8">8</button>
+          <button class="key" data-k="9">9</button>
+          <button class="key op" data-k="/">÷</button>
 
-            const tecla = e.key;
+          <button class="key" data-k="4">4</button>
+          <button class="key" data-k="5">5</button>
+          <button class="key" data-k="6">6</button>
+          <button class="key op" data-k="*">×</button>
 
-            // Números
-            if (!isNaN(tecla)) {
-                addCalc(tecla);
-            }
+          <button class="key" data-k="1">1</button>
+          <button class="key" data-k="2">2</button>
+          <button class="key" data-k="3">3</button>
+          <button class="key op" data-k="-">−</button>
 
-            // Operadores
-            if (["+", "-", "*", "/"].includes(tecla)) {
-                addCalc(tecla);
-            }
+          <button class="key" data-k="0">0</button>
+          <button class="key" data-k=".">.</button>
+          <button class="key equal" data-k="=">=</button>
+          <button class="key op" data-k="+">+</button>
 
-            // Decimal
-            if (tecla === ".") {
-                addCalc(".");
-            }
+          <button class="key wide" data-k="back">⌫</button>
+          <button class="key wide" data-k="clear">AC</button>
+        </div>
 
-            // Enter = calcular
-            if (tecla === "Enter") {
-                e.preventDefault();
-                calcularCalc();
-            }
+        <small class="help">
+          Teclado: números, <kbd>+</kbd> <kbd>-</kbd> <kbd>*</kbd> <kbd>/</kbd>, <kbd>Enter</kbd> evaluar,
+          <kbd>Backspace</kbd> borrar, <kbd>Esc</kbd> limpiar.
+        </small>
+      </div>
+    </section>
 
-            // Borrar último carácter
-            if (tecla === "Backspace") {
-                calcDisplay.value = calcDisplay.value.slice(0, -1);
-            }
+    <!-- POS -->
+    <section class="card" aria-labelledby="posTitle">
+      <div class="card-header">
+        <h2 id="posTitle">Punto de Venta (POS)</h2>
+        <span class="badge badge-soft">Cobro • Pago • Cambio</span>
+      </div>
 
-            // Limpiar todo
-            if (tecla === "Escape") {
-                clearCalc();
-            }
+      <div class="pos">
+        <div class="field">
+          <label for="posCharge">Valor a cobrar</label>
+          <div class="input-row">
+            <input id="posCharge" inputmode="decimal" autocomplete="off" placeholder="Ej: 25000" />
+            <button class="btn btn-ghost" id="btnPosChargeFromCalc" title="Traer desde calculadora">Desde Calc</button>
+          </div>
+        </div>
 
+        <div class="field">
+          <label for="posPaid">Pago recibido</label>
+          <div class="input-row">
+            <input id="posPaid" inputmode="decimal" autocomplete="off" placeholder="Ej: 50000" />
+            <button class="btn btn-ghost" id="btnPosPaidFromCalc" title="Traer desde calculadora">Desde Calc</button>
+          </div>
+        </div>
 
-            // Redondear con tecla R
-            if (tecla.toLowerCase() === "r") {
-                roundCalc();
-            }
-        });
+        <div class="results">
+          <div class="result">
+            <div class="result-label">Cambio a entregar</div>
+            <div class="result-value" id="posChange">$0</div>
+            <div class="result-sub" id="posChangeRaw">0</div>
+          </div>
 
+          <div class="result subtle">
+            <div class="result-label">Estado</div>
+            <div class="result-value" id="posStatus">—</div>
+            <div class="result-sub" id="posStatusHint">Ingresa valores para calcular</div>
+          </div>
+        </div>
 
+        <div class="actions">
+          <button class="btn btn-ghost" id="btnPosCopy">Copiar cambio</button>
+          <button class="btn btn-ghost" id="btnPosClear">Limpiar POS</button>
+        </div>
+      </div>
+    </section>
+  </main>
 
+  <footer class="app-footer">
+    <span>Versión web (HTML/CSS/JS). Lista para empaquetar en escritorio con Electron si lo deseas.</span>
+  </footer>
 
-        function roundCalc() {
-            if (calcDisplay.value === "") return;
-
-            const valor = parseFloat(calcDisplay.value);
-
-            if (isNaN(valor)) {
-                calcDisplay.value = "Error";
-                return;
-            }
-
-            calcDisplay.value = Math.round(valor);
-        }
-
-
-
-
-
-    </script>
-
+  <script src="app.js"></script>
 </body>
-
 </html>
